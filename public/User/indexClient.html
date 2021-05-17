@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>Easy Commerce</title>
+
+    <!-- Required Stylesheets -->
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+
+    <!-- Required scripts -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Start running your app --> <div>
+            <b-navbar toggleable="lg" type="dark" variant="danger">
+                <b-navbar-brand href="/web">Easy Commerce</b-navbar-brand>
+            
+                <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+            
+                <b-collapse id="nav-collapse" is-nav>
+                <b-navbar-nav>
+                    <b-nav-item href="./misPedidosCliente.html">Mis pedidos</b-nav-item>
+                    <b-nav-item href="./perfilUser.html">Perfil</b-nav-item>
+                    <b-nav-item href="./newClient.html">Registar nuevo cliente</b-nav-item>
+                </b-navbar-nav>
+                </b-collapse>
+            </b-navbar>
+        </div>
+        <h1>CLIENT</h1>
+    </div>
+    <script>
+        window.app = new Vue({
+            el: '#app',
+            data: {
+            },
+            computed: {
+                showAlert() {
+                    return this.name.length > 2 ? true : false
+                }
+            },
+            methods: {
+            },
+            created() {
+                var self = this
+                var ES = new EventSource('/news') //ruta API con notificaciones
+
+                console.log('Creando listener de eventos de servidor...')
+
+                ES.addEventListener('new-post', function (event) {
+                    var data = JSON.parse(JSON.parse(event.data))
+                    //bytes to string -> string to json
+                    //console.log(data)
+                    if (data.blogId == self.blogId)
+                        self.posts.push(data)
+                }, false)
+            }
+        })
+    </script>
+</body>
+
+</html>

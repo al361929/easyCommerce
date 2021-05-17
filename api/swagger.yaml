@@ -1,0 +1,535 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "EasyCommerce"
+host: "localhost:8080"
+basePath: "/"
+tags:
+- name: "User"
+  description: "Usuarios de la aplicación (no comercios)"
+- name: "Product"
+  description: "Producto que ofrece un comercio"
+- name: "Commerce"
+  description: "Comercios"
+schemes:
+- "http"
+paths:
+  /user/create:
+    post:
+      tags:
+      - "User"
+      summary: "Create user"
+      description: "This can only be done by the logged in user."
+      operationId: "createUser"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        default:
+          description: "successful operation"
+      x-swagger-router-controller: "User"
+  /users:
+    get:
+      tags:
+      - "User"
+      summary: "Get users"
+      description: ""
+      operationId: "getUsers"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "username"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        "400":
+          description: "Invalid data"
+      x-swagger-router-controller: "User"
+  /user/login:
+    get:
+      tags:
+      - "User"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+          schema:
+            type: "string"
+        "400":
+          description: "Invalid username/password supplied"
+      x-swagger-router-controller: "User"
+  /user/logout:
+    get:
+      tags:
+      - "User"
+      summary: "Logs out current logged in user session"
+      description: ""
+      operationId: "logoutUser"
+      produces:
+      - "application/ld+json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+      x-swagger-router-controller: "User"
+  /user/{username}:
+    get:
+      tags:
+      - "User"
+      summary: "Get user by user name"
+      description: ""
+      operationId: "getUserByName"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The name that needs to be fetched."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+      x-swagger-router-controller: "User"
+    put:
+      tags:
+      - "User"
+      summary: "Updated user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+      x-swagger-router-controller: "User"
+    delete:
+      tags:
+      - "User"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+      x-swagger-router-controller: "User"
+  /product/create:
+    post:
+      tags:
+      - "Product"
+      summary: "Add a new product to the commerce's catalogue"
+      description: ""
+      operationId: "addProduct"
+      consumes:
+      - "application/json"
+      - "application/ld+json"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Product object that needs to be added to the commerce's catalogue"
+        required: true
+        schema:
+          $ref: "#/definitions/Product"
+      responses:
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "Product"
+  /product/{id}:
+    get:
+      tags:
+      - "Product"
+      summary: "Get product by id"
+      description: ""
+      operationId: "getProductById"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The id that needs to be fetched."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "400":
+          description: "Invalid product id supplied"
+        "404":
+          description: "Product not found"
+      x-swagger-router-controller: "Product"
+    put:
+      tags:
+      - "Product"
+      summary: "Updated product"
+      description: ""
+      operationId: "updateProduct"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Product id that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated product object"
+        required: true
+        schema:
+          $ref: "#/definitions/Product"
+      responses:
+        "400":
+          description: "Invalid id supplied"
+        "404":
+          description: "Product not found"
+      x-swagger-router-controller: "Product"
+    delete:
+      tags:
+      - "Product"
+      summary: "Delete product"
+      description: "This can only be done by the unused products."
+      operationId: "deleteProduct"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The id that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid id supplied"
+        "404":
+          description: "Product not found"
+      x-swagger-router-controller: "Product"
+  /products:
+    get:
+      tags:
+      - "Product"
+      summary: "Get products"
+      description: ""
+      operationId: "getProducts"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "name"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "category"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "maxPrice"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        "400":
+          description: "Invalid data"
+      x-swagger-router-controller: "Product"
+  /commerce/create:
+    post:
+      tags:
+      - "Commerce"
+      summary: "Add a new commerce"
+      description: ""
+      operationId: "addCommerce"
+      consumes:
+      - "application/ld+json"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Commerce object that needs to be added."
+        required: true
+        schema:
+          $ref: "#/definitions/Commerce"
+      responses:
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "Commerce"
+  /commerce/{id}:
+    get:
+      tags:
+      - "Commerce"
+      summary: "Get commerce by id"
+      description: ""
+      operationId: "getCommerceById"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The id that needs to be fetched."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Commerce"
+        "400":
+          description: "Invalid commerce id supplied"
+        "404":
+          description: "Commerce not found"
+      x-swagger-router-controller: "Commerce"
+    put:
+      tags:
+      - "Commerce"
+      summary: "Updated commerce"
+      description: "The commerce needs to exist."
+      operationId: "updateCommerce"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Commerce id that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated commerce object"
+        required: true
+        schema:
+          $ref: "#/definitions/Commerce"
+      responses:
+        "400":
+          description: "Invalid id supplied"
+        "404":
+          description: "Commerce not found"
+      x-swagger-router-controller: "Commerce"
+    delete:
+      tags:
+      - "Commerce"
+      summary: "Delete commerce"
+      description: ""
+      operationId: "deleteCommerce"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The id that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid id supplied"
+        "404":
+          description: "Commerce not found"
+      x-swagger-router-controller: "Commerce"
+  /commerces:
+    get:
+      tags:
+      - "Commerce"
+      summary: "Get commerces"
+      description: ""
+      operationId: "getCommerces"
+      produces:
+      - "application/ld+json"
+      parameters:
+      - name: "name"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Commerce"
+        "400":
+          description: "Invalid data"
+      x-swagger-router-controller: "Commerce"
+definitions:
+  User:
+    type: "object"
+    required:
+    - "email"
+    - "id"
+    - "lastName"
+    - "name"
+    - "password"
+    - "phone"
+    - "username"
+    properties:
+      id:
+        type: "string"
+      username:
+        type: "string"
+      password:
+        type: "string"
+      name:
+        type: "string"
+      lastName:
+        type: "string"
+      email:
+        type: "string"
+      phone:
+        type: "string"
+      role:
+        type: "string"
+        enum:
+        - "user"
+        - "admin"
+    xml:
+      name: "User"
+    example:
+      name: "name"
+      lastName: "lastName"
+      password: "password"
+      role: "user"
+      phone: "phone"
+      id: "id"
+      email: "email"
+      username: "username"
+  Product:
+    type: "object"
+    required:
+    - "category"
+    - "id"
+    - "name"
+    - "price"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      image:
+        type: "string"
+      description:
+        type: "string"
+      price:
+        type: "number"
+      category:
+        type: "string"
+    xml:
+      name: "Product"
+    example:
+      category: "category"
+      price: 5
+      name: "name"
+      description: "description"
+      productID: "id"
+      image: "image"
+  Commerce:
+    type: "object"
+    required:
+    - "address"
+    - "cif"
+    - "id"
+    - "name"
+    - "password"
+    - "username"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      cif:
+        type: "string"
+      catalogue:
+        type: "array"
+        items:
+          type: "string"
+      username:
+        type: "string"
+      password:
+        type: "string"
+    xml:
+      name: "Commerce"
+    example:
+      cif: "cif"
+      password: "password"
+      address: "address"
+      name: "name"
+      id: "id"
+      catalogue:
+      - "catalogue"
+      - "catalogue"
+      username: "username"
